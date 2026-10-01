@@ -67,8 +67,8 @@ app/
 ### 手順
 
 ```bash
-git clone https://github.com/Seiyou39/job_agent.git
-cd job_agent
+git clone https://github.com/Seiyou39/Job-Agent.git
+cd Job-Agent
 bundle install
 bin/rails db:prepare
 ```
