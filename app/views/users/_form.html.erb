@@ -1,0 +1,9 @@
+<%= form_with(model: user) do |form| %>
+  <% if user.errors.any? %><div class="error-message"><ul><% user.errors.each do |error| %><li><%= error.full_message %></li><% end %></ul></div><% end %>
+  <div class="form-group"><%= form.label :email_address, "メールアドレス" %><%= form.email_field :email_address %></div>
+  <div class="form-group"><%= form.label :password, "パスワード" %><%= form.password_field :password %></div>
+  <div class="form-group"><%= form.label :password_confirmation, "パスワード（確認）" %><%= form.password_field :password_confirmation %></div>
+  <% current = Session.find_by_id(cookies.signed[:session_id])&.user %>
+  <% if current&.role == "admin" %><div class="form-group"><%= form.label :role, "権限" %><%= form.select :role, [["一般ユーザー", "reviewer"], ["管理者", "admin"]], selected: user.role %></div><% end %>
+  <div class="form-actions"><%= form.submit "保存する", class: "btn" %></div>
+<% end %>

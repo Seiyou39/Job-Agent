@@ -1,0 +1,6 @@
+<% content_for :title, "ユーザー管理 | Job Agent" %>
+<div class="container">
+  <div class="page-header"><div class="page-title-wrap"><p class="eyebrow">Administration</p><h1>ユーザー管理</h1><p class="sub">登録ユーザーと権限を管理します。</p></div><%= link_to new_user_path, class: "btn" do %><i class="ti ti-user-plus"></i> ユーザー追加<% end %></div>
+  <% if notice %><p class="notice-inline"><%= notice %></p><% end %>
+  <section class="panel"><div class="user-grid"><% @users.each do |user| %><div class="user-row"><p class="user-email"><%= user.email_address %></p><p class="user-role"><%= user.role %></p><div class="list-item-actions"><%= link_to "詳細", user, class: "action-link action-link-primary" %><%= link_to "編集", edit_user_path(user), class: "action-link action-link-edit" %></div></div><% end %></div></section>
+</div>

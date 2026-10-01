@@ -1,0 +1,74 @@
+<% content_for :title, "ダッシュボード | Job Agent" %>
+<div class="dash">
+  <div class="dash-header">
+    <div class="page-title-wrap">
+      <p class="eyebrow">Career workspace</p>
+      <h1>今日も一社ずつ</h1>
+      <p class="page-description"><%= @user.email_address %> さんの企業分析と準備タスクをまとめて管理します。</p>
+    </div>
+    <%= link_to new_analysis_path, class: "btn" do %><i class="ti ti-sparkles"></i> 新しく分析<% end %>
+  </div>
+
+  <div class="resume-card">
+    <div class="resume-icon"><i class="ti ti-file-cv"></i></div>
+    <div style="flex:1; min-width:0;">
+      <p class="label">保存済みの履歴書</p>
+      <p class="text"><%= @user.resume_text.present? ? truncate(@user.resume_text, length: 100) : "まだ登録されていません。分析精度を上げるため、経歴を登録してください。" %></p>
+    </div>
+    <%= link_to edit_profile_path, class: "btn btn-secondary btn-sm" do %><i class="ti ti-pencil"></i> 編集<% end %>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title"><i class="ti ti-building-skyscraper"></i> 分析した企業</span>
+      <span class="job"><%= @analyses.count %> 件</span>
+    </div>
+    <% if @analyses.any? %>
+      <div class="card-grid">
+        <% @analyses.each do |analysis| %>
+          <%= link_to analysis_path(analysis), class: "card" do %>
+            <div class="card-top">
+              <div>
+                <p class="company"><%= analysis.company_name %></p>
+                <p class="job"><%= analysis.job_title %></p>
+              </div>
+              <% score = analysis.match_score || 0 %>
+              <% color, bg, tag_class, tag_text = score >= 70 ? ["#15A36D", "#E9F8F2", "tag-good", "高マッチ"] : score >= 50 ? ["#D88A13", "#FFF5DF", "tag-mid", "要対策"] : ["#D9485F", "#FFF0F3", "tag-low", "ギャップ大"] %>
+              <div class="ring" style="background: conic-gradient(<%= color %> 0% <%= score %>%, <%= bg %> <%= score %>% 100%);">
+                <div class="ring-inner" style="color:<%= color %>"><%= score %></div>
+              </div>
+            </div>
+            <span class="tag <%= tag_class %>"><%= tag_text %></span>
+          <% end %>
+        <% end %>
+        <%= link_to new_analysis_path, class: "card add-card" do %><i class="ti ti-plus"></i><span>企業分析を追加</span><% end %>
+      </div>
+    <% else %>
+      <div class="empty-state"><i class="ti ti-chart-dots"></i><p>まだ企業分析がありません。</p></div>
+    <% end %>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title"><i class="ti ti-checklist"></i> TODOリスト</span>
+      <%= link_to new_todo_list_path, class: "btn btn-sm" do %><i class="ti ti-plus"></i> 新規作成<% end %>
+    </div>
+    <% if @todo_lists.any? %>
+      <div class="card-grid">
+        <% @todo_lists.each do |list| %>
+          <%= link_to todo_list_path(list), class: "card" do %>
+            <div style="display:flex; align-items:center; gap:9px; margin-bottom:14px;">
+              <span class="badge <%= list.manual? ? 'badge-manual' : 'badge-ai' %>"><%= list.manual? ? '手動' : '自動生成' %></span>
+              <p class="company"><%= list.title %></p>
+            </div>
+            <% total = list.todos.count; done = list.todos.where(done: true).count; progress = total.zero? ? 0 : (done * 100.0 / total).round %>
+            <div class="bar"><div class="bar-fill" style="width:<%= progress %>%"></div></div>
+            <p class="job" style="margin-top:9px;"><%= done %> / <%= total %> 完了</p>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state"><i class="ti ti-list-check"></i><p>まだリストがありません。</p></div>
+    <% end %>
+  </section>
+</div>

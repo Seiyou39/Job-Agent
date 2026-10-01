@@ -1,0 +1,11 @@
+<% content_for :title, "リスト作成 | Job Agent" %>
+<div class="analyze">
+  <div class="page-header"><div class="page-title-wrap"><p class="eyebrow">New checklist</p><h1>新しいリストを作成</h1><p class="sub">応募準備や学習計画を、自分用のチェックリストとしてまとめます。</p></div></div>
+  <div class="form-card">
+    <% if @todo_list.errors.any? %><div class="error-message"><ul><% @todo_list.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+    <%= form_with(model: @todo_list, local: true) do |form| %>
+      <div class="form-group"><%= form.label :title, "リスト名" %><%= form.text_field :title, placeholder: "例：面接前の準備", autofocus: true %></div>
+      <div class="form-actions"><%= form.submit "作成する", class: "btn" %><%= link_to "キャンセル", todo_lists_path, class: "btn btn-secondary" %></div>
+    <% end %>
+  </div>
+</div>

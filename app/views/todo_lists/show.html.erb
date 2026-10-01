@@ -1,0 +1,63 @@
+<% content_for :title, "#{@todo_list.title} | Job Agent" %>
+<div class="container">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <p class="eyebrow">Checklist</p>
+      <h1><%= @todo_list.title %></h1>
+      <p class="sub"><span class="badge <%= @todo_list.manual? ? 'badge-manual' : 'badge-ai' %>"><%= @todo_list.manual? ? '手動' : '自動生成' %></span></p>
+    </div>
+    <div class="header-actions">
+      <%= link_to "リスト一覧", todo_lists_path, class: "btn btn-secondary" %>
+      <%= link_to "ダッシュボード", root_path, class: "btn" %>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="section-head"><h2>未完了タスク</h2><span class="job"><%= @todo_list.todos.where(done: false).count %>件</span></div>
+    <% if @todo_list.todos.where(done: false).any? %>
+      <% @todo_list.todos.where(done: false).each do |todo| %>
+        <div class="todo-item">
+          <%= form_with(model: [@todo_list, todo], local: true, method: :patch, class: "checkbox-form") do |f| %>
+            <%= f.check_box :done, { class: "todo-checkbox", onchange: "this.form.requestSubmit()" }, 'true', 'false' %>
+          <% end %>
+          <div class="todo-content">
+            <span class="todo-text"><%= todo.task %></span>
+            <% if todo.priority.present? %><span class="priority-badge priority-<%= todo.priority %>"><%= { 'high' => '高', 'medium' => '中', 'low' => '低' }[todo.priority] %></span><% end %>
+          </div>
+          <div class="todo-actions">
+            <%= link_to edit_todo_list_todo_path(@todo_list, todo), class: "action-link action-link-edit" do %><i class="ti ti-pencil"></i><% end %>
+            <%= button_to todo_list_todo_path(@todo_list, todo), method: :delete, data: { turbo_confirm: "このタスクを削除しますか？" }, class: "action-link action-link-delete" do %><i class="ti ti-trash"></i><% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="empty-state"><i class="ti ti-circle-check"></i><p>未完了のタスクはありません。</p></div>
+    <% end %>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>完了済み</h2><span class="job"><%= @todo_list.todos.where(done: true).count %>件</span></div>
+    <% if @todo_list.todos.where(done: true).any? %>
+      <% @todo_list.todos.where(done: true).each do |todo| %>
+        <div class="todo-item done">
+          <%= form_with(model: [@todo_list, todo], local: true, method: :patch, class: "checkbox-form") do |f| %>
+            <%= f.check_box :done, { class: "todo-checkbox", onchange: "this.form.requestSubmit()", checked: true }, 'true', 'false' %>
+          <% end %>
+          <div class="todo-content"><span class="todo-text"><%= todo.task %></span></div>
+          <div class="todo-actions"><%= button_to todo_list_todo_path(@todo_list, todo), method: :delete, data: { turbo_confirm: "このタスクを削除しますか？" }, class: "action-link action-link-delete" do %><i class="ti ti-trash"></i><% end %></div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="empty-state"><p>完了済みのタスクはまだありません。</p></div>
+    <% end %>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-plus"></i> タスクを追加</span></div>
+    <%= form_with(model: [@todo_list, @todo], local: true) do |form| %>
+      <div class="form-group"><%= form.label :task, "タスク内容" %><%= form.text_field :task, placeholder: "例：企業研究をまとめる", autofocus: true %></div>
+      <div class="form-group"><%= form.label :priority, "優先度" %><%= form.select :priority, [["高", "high"], ["中", "medium"], ["低", "low"]], { include_blank: "選択してください" } %></div>
+      <div class="form-submit"><%= form.submit "タスクを追加", class: "btn" %></div>
+    <% end %>
+  </section>
+</div>

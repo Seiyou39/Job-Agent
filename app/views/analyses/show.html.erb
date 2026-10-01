@@ -1,0 +1,97 @@
+<% content_for :title, "分析結果 | Job Agent" %>
+<div class="result">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <p class="eyebrow">Analysis result</p>
+      <h1><%= @analysis.company_name %></h1>
+      <p class="sub"><%= @analysis.job_title %></p>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="score-layout">
+      <div>
+        <p class="label">マッチ度</p>
+        <span class="score-big"><%= @analysis.match_score %></span><span class="score-max"> / 100</span>
+      </div>
+      <p class="score-copy">履歴書と求人要件を比較した<br>総合的な適合スコアです。</p>
+    </div>
+    <div class="bar" style="margin-top:22px;"><div class="bar-fill" style="width:<%= @analysis.match_score %>%; background:<%= @analysis.match_score >= 70 ? '#15A36D' : @analysis.match_score >= 50 ? '#D88A13' : '#D9485F' %>;"></div></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-bulb"></i> 改善アドバイス</span></div>
+    <p class="advice"><%= @analysis.advice %></p>
+  </section>
+
+   <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-star"></i> あなたの強み</span></div>
+    <ul class="analysis-list">
+      <% @analysis.strengths.each do |s| %>
+        <li><i class="ti ti-check"></i><%= s %></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-alert-triangle"></i> 補強すべき点</span></div>
+    <ul class="analysis-list">
+      <% @analysis.skill_gaps.each do |g| %>
+        <li><i class="ti ti-arrow-up-right"></i><%= g %></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-messages"></i> 想定される面接質問</span></div>
+    <ol class="analysis-list analysis-list-ol">
+      <% @analysis.interview_questions.each do |q| %>
+        <li><%= q %></li>
+      <% end %>
+    </ol>
+  </section>
+
+<% if @analysis.location_valid? %>
+  <section class="panel rent-egg">
+    <div class="panel-head">
+      <span class="panel-title"><i class="ti ti-map-pin"></i> エリア家賃の目安</span>
+    </div>
+    <% if @predicted_rent %>
+      <p class="rent-egg-lead">
+        この求人の勤務地 <strong><%= @analysis.location_ja %></strong> で、
+        単身向けの1K（25㎡・築15年・徒歩10分）に住むと…
+      </p>
+      <p class="rent-egg-price">
+        想定家賃 <span class="rent-egg-num"><%= (@predicted_rent / 10000).round(1) %></span> 万円 / 月
+      </p>
+      <p class="rent-egg-note">
+        ※ 自作した線形回帰モデルによる予測値です。面積・間取り・築年数を変えて詳しく調べたい場合は、
+        <a href="https://tokyo-rent-predictor-app.onrender.com/?location=<%= @analysis.location %>"
+           target="_blank" rel="noopener">Tokyo Rent Predictor</a>
+        で自由にシミュレーションできます。
+      </p>
+    <% else %>
+      <p class="rent-egg-lead">
+        この求人の勤務地は <strong><%= @analysis.location_ja %></strong> 周辺です。
+      </p>
+      <p class="rent-egg-note">
+        <a href="https://tokyo-rent-predictor-app.onrender.com/?location=<%= @analysis.location %>"
+           target="_blank" rel="noopener" class="btn btn-sm">
+          <i class="ti ti-home-search"></i> <%= @analysis.location_ja %> の家賃を予測する
+        </a>
+      </p>
+    <% end %>
+  </section>
+<% end %>
+
+  <section class="panel">
+    <div class="panel-head"><span class="panel-title"><i class="ti ti-list-check"></i> 生成されたTODO</span></div>
+    <p class="page-description" style="margin:0 0 18px;">分析結果をもとに、準備すべき項目をタスク化しました。</p>
+    <%= link_to todo_list_path(@analysis.todo_list), class: "btn" do %><i class="ti ti-arrow-right"></i> TODOリストを見る（<%= @analysis.todo_list.todos.count %>件）<% end %>
+  </section>
+
+  <div class="actions">
+    <%= link_to root_path, class: "btn btn-secondary" do %><i class="ti ti-arrow-left"></i> ダッシュボードへ<% end %>
+    <%= button_to analysis_path(@analysis), method: :delete, class: "btn btn-danger", data: { turbo_confirm: "この分析を削除しますか？" } do %><i class="ti ti-trash"></i> 削除<% end %>
+  </div>
+</div>

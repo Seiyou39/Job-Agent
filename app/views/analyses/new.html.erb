@@ -1,0 +1,58 @@
+<% content_for :title, "新しく分析 | Job Agent" %>
+<div class="analyze">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <p class="eyebrow">AI job analysis</p>
+      <h1>求人票を分析する</h1>
+      <p class="sub">求人情報を貼り付けると、履歴書とのマッチ度と具体的な対策を整理します。</p>
+    </div>
+
+</div>
+  <%= form_with url: analyses_path, method: :post do |f| %>
+    <section class="panel">
+      <div class="panel-head"><span class="panel-title"><i class="ti ti-file-description"></i> 求人票</span></div>
+      <%= f.text_area :jd_text, placeholder: "企業名、職種、仕事内容、必須スキルなどを含む求人情報を貼り付けてください…", required: true %>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><span class="panel-title"><i class="ti ti-file-cv"></i> 使用する履歴書</span></div>
+      <% if Current.user.resume_text.present? %>
+        <div class="resume-preview"><%= truncate(Current.user.resume_text, length: 220) %></div>
+      <% else %>
+        <p class="warn"><i class="ti ti-alert-circle"></i> 履歴書が未登録です。先に登録すると分析精度が上がります。</p>
+      <% end %>
+    </section>
+    <div class="actions">
+      <%= f.submit "分析を開始", class: "btn", data: { turbo_submits_with: "分析中... しばらくお待ちください" } %>
+      <%= link_to "キャンセル", root_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+  <div id="analysis-overlay" class="overlay" hidden>
+  <div class="overlay-box">
+    <div class="overlay-spinner"></div>
+    <p class="overlay-text" id="overlay-step">求人票を読み込んでいます...</p>
+    <p class="overlay-sub">分析中。10〜20秒ほどかかります。</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    var form = document.querySelector(".analyze form");
+    if (!form) return;
+    form.addEventListener("submit", function() {
+      var overlay = document.getElementById("analysis-overlay");
+      if (!overlay) return;
+      overlay.hidden = false;
+      var stepEl = document.getElementById("overlay-step");
+      var steps = [
+        "求人票を読み込んでいます...",
+        "あなたの経歴と照合しています...",
+        "マッチ度を算出しています...",
+        "対策プランを生成しています..."
+      ];
+      var i = 0;
+      setInterval(function(){ i = (i+1) % steps.length; stepEl.textContent = steps[i]; }, 2500);
+    });
+  });
+</script>
+
+</div>

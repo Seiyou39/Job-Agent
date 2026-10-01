@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  todo_list: one
+  company_name: MyString
+  job_title: MyString
+  jd_text: MyText
+  match_score: 1
+  advice: MyText
+
+two:
+  user: two
+  todo_list: two
+  company_name: MyString
+  job_title: MyString
+  jd_text: MyText
+  match_score: 1
+  advice: MyText

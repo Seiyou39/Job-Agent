@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title><%= content_for(:title) || "Job Agent" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Job Agent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <% if authenticated? %>
+      <nav class="topnav">
+        <%= link_to root_path, class: "topnav-brand" do %>
+          <span class="topnav-name">Job Agent</span>
+        <% end %>
+        <div class="topnav-links">
+          <%= link_to root_path do %><i class="ti ti-layout-dashboard"></i> ダッシュボード<% end %>
+          <%= link_to todo_lists_path do %><i class="ti ti-list-check"></i> リスト<% end %>
+          <% if Current.user&.role == "admin" %>
+            <%= link_to users_path do %><i class="ti ti-users"></i> ユーザー<% end %>
+          <% end %>
+          <%= button_to session_path, method: :delete, class: "action-link" do %><i class="ti ti-logout"></i> ログアウト<% end %>
+          <span class="topnav-avatar"><%= Current.user&.email_address&.first&.upcase %></span>
+        </div>
+      </nav>
+    <% end %>
+    <%= yield %>
+  </body>
+</html>

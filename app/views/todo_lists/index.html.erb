@@ -1,0 +1,34 @@
+<% content_for :title, "TODOリスト | Job Agent" %>
+<div class="container">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <p class="eyebrow">Task management</p>
+      <h1>TODOリスト</h1>
+      <p class="sub"><%= @todo_lists.count %>件のリストを管理しています。</p>
+    </div>
+    <div class="header-actions">
+      <%= link_to new_todo_list_path, class: "btn" do %><i class="ti ti-plus"></i> 新規作成<% end %>
+    </div>
+  </div>
+
+  <section class="panel">
+    <% if @todo_lists.any? %>
+      <div class="list-container">
+        <% @todo_lists.each do |list| %>
+          <div class="list-item">
+            <div class="list-item-content">
+              <%= link_to list.title, todo_list_path(list), class: "list-item-title" %>
+              <span class="badge <%= list.manual? ? 'badge-manual' : 'badge-ai' %>"><%= list.manual? ? '手動' : '自動生成' %></span>
+            </div>
+            <div class="list-item-actions">
+              <%= link_to todo_list_path(list), class: "action-link action-link-primary" do %><i class="ti ti-arrow-right"></i> 開く<% end %>
+              <%= button_to todo_list_path(list), method: :delete, data: { turbo_confirm: "このリストを削除しますか？" }, class: "action-link action-link-danger" do %><i class="ti ti-trash"></i> 削除<% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state"><i class="ti ti-list-check"></i><p>まだリストがありません。</p><%= link_to "最初のリストを作成", new_todo_list_path, class: "btn btn-sm", style: "margin-top:14px;" %></div>
+    <% end %>
+  </section>
+</div>

@@ -1,0 +1,27 @@
+<% content_for :title, "ログイン | Job Agent" %>
+<div class="auth">
+  <aside class="auth-visual">
+    <div class="auth-visual-brand"><span>Job Agent</span></div>
+    <div class="auth-visual-copy">
+      <h2>就活中の開発者が作りました。<br>開発者たちはまだ就活中です。</h2>
+      <p>AIがあなたの就活をサポートします。作者にも誰かサポートしてください。</p>
+    </div>
+    <div class="auth-features">
+      <span class="auth-feature"><i class="ti ti-sparkles"></i> AIマッチ分析</span>
+      <span class="auth-feature"><i class="ti ti-list-check"></i> TODO自動生成</span>
+      <span class="auth-feature"><i class="ti ti-file-cv"></i> 履歴書管理</span>
+    </div>
+  </aside>
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="auth-head"><h1 class="auth-title">おかえりなさい</h1><p class="auth-sub">アカウントにログインして続けます。</p></div>
+      <% if flash[:alert] %><div class="error-message"><%= flash[:alert] %></div><% end %>
+      <%= form_with url: session_path do |form| %>
+        <div class="form-group"><%= form.label :email_address, "メールアドレス" %><%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "name@example.com", value: params[:email_address] %></div>
+        <div class="form-group"><%= form.label :password, "パスワード" %><%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "パスワードを入力", maxlength: 72 %></div>
+        <div class="form-submit"><%= form.submit "ログイン", class: "btn auth-submit" %></div>
+      <% end %>
+      <div class="auth-links"><%= link_to "パスワードを忘れた方", new_password_path %><%= link_to "新規登録", new_user_path, class: "auth-link-accent" %></div>
+    </div>
+  </main>
+</div>

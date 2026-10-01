@@ -1,0 +1,21 @@
+<% content_for :title, "アカウント作成 | Job Agent" %>
+<div class="auth">
+  <aside class="auth-visual">
+    <div class="auth-visual-brand"><span>Job Agent</span></div>
+    <div class="auth-visual-copy"><h2>履歴書は分析できます<br>将来は分析できません</h2><p>企業ごとの要件と自分の強み・不足を可視化し、次に何をすべきかを明確にします。</p></div>
+    <div class="auth-features"><span class="auth-feature">無料でスタート</span><span class="auth-feature">シンプルな管理</span></div>
+  </aside>
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="auth-head"><h1 class="auth-title">アカウント作成</h1><p class="auth-sub">Job Agentをはじめましょう。</p></div>
+      <%= form_with(model: @user, url: users_path) do |form| %>
+        <% if @user.errors.any? %><div class="error-message"><ul><% @user.errors.each do |error| %><li><%= error.full_message %></li><% end %></ul></div><% end %>
+        <div class="form-group"><%= form.label :email_address, "メールアドレス" %><%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "name@example.com" %></div>
+        <div class="form-group"><%= form.label :password, "パスワード" %><%= form.password_field :password, required: true, autocomplete: "new-password", placeholder: "パスワードを入力", maxlength: 72 %></div>
+        <div class="form-group"><%= form.label :password_confirmation, "パスワード（確認）" %><%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "もう一度入力", maxlength: 72 %></div>
+        <div class="form-submit"><%= form.submit "登録する", class: "btn auth-submit" %></div>
+      <% end %>
+      <div class="auth-links auth-links-center"><span>すでにアカウントをお持ちですか？ <%= link_to "ログイン", new_session_path, class: "auth-link-accent" %></span></div>
+    </div>
+  </main>
+</div>
